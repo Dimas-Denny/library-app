@@ -47,12 +47,16 @@ export default function CategorySection() {
   );
 
   return (
-    <section className="py-4 md:py-6">
+    <section className="py-4 md:py-6 space-y-4">
+      {/* Title */}
+      <h2 className="text-2xl font-bold">Category</h2>
+
+      {/* Grid */}
       <div
         className="
-          grid grid-cols-3 gap-4
-          md:grid-cols-6 md:gap-6
-        "
+        grid grid-cols-3 gap-4
+        md:grid-cols-6 md:gap-6
+      "
       >
         {items.map((cat) => {
           const Icon = iconByKey[cat.key];
@@ -63,25 +67,25 @@ export default function CategorySection() {
               key={cat.key}
               to={to}
               className="
-                rounded-2xl bg-white
-                p-3 md:p-4
-                shadow-[0_18px_35px_rgba(0,0,0,0.07)]
-                transition
-                hover:shadow-[0_22px_45px_rgba(0,0,0,0.09)]
-                active:scale-[0.98]
-              "
+              rounded-2xl bg-white
+              p-3 md:p-4
+              shadow-[0_18px_35px_rgba(0,0,0,0.07)]
+              transition
+              hover:shadow-[0_22px_45px_rgba(0,0,0,0.09)]
+              active:scale-[0.98]
+            "
             >
               <div
                 className="
-                  flex w-full items-center justify-center
-                  rounded-xl bg-[#E0ECFF]
-                  h-14 md:h-12
-                "
+                flex w-full items-center justify-center
+                rounded-xl bg-[#E0ECFF]
+                h-14 md:h-12
+              "
               >
                 <img
                   src={Icon}
                   alt={cat.label}
-                  className="h-11.2 w-11.2 md:h-12.8 md:w-12.8"
+                  className="h-11 w-11 md:h-12 md:w-12"
                   width={42}
                   height={42}
                 />
@@ -89,12 +93,12 @@ export default function CategorySection() {
 
               <p
                 className="
-                  mt-2 md:mt-2
-                  whitespace-pre-line
-                  text-xs md:text-[11px]
-                  font-bold leading-snug
-                  text-black
-                "
+                mt-2
+                whitespace-pre-line
+                text-xs md:text-[11px]
+                font-bold leading-snug
+                text-black
+              "
               >
                 {formatLabel(cat.label)}
               </p>

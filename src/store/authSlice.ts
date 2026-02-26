@@ -2,9 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export type User = {
-  id: string;
+  id: number;
   name: string;
   email: string;
+  phone: string;
+  profilePhoto: string | null;
   role: "ADMIN" | "USER";
 };
 
@@ -26,16 +28,16 @@ const authSlice = createSlice({
       state.token = action.payload;
       localStorage.setItem("token", action.payload);
     },
-    clearAuth(state) {
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
+    },
+    logout(state) {
       state.token = null;
       state.user = null;
       localStorage.removeItem("token");
     },
-    setUser(state, action: PayloadAction<User>) {
-      state.user = action.payload;
-    },
   },
 });
 
-export const { setToken, clearAuth, setUser } = authSlice.actions;
+export const { setToken, setUser, logout } = authSlice.actions;
 export default authSlice.reducer;
