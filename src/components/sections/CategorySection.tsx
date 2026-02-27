@@ -48,10 +48,8 @@ export default function CategorySection() {
 
   return (
     <section className="py-4 md:py-6 space-y-4">
-      {/* Title */}
       <h2 className="text-2xl font-bold">Category</h2>
 
-      {/* Grid */}
       <div
         className="
         grid grid-cols-3 gap-4
@@ -60,7 +58,9 @@ export default function CategorySection() {
       >
         {items.map((cat) => {
           const Icon = iconByKey[cat.key];
-          const to = `/books?categoryKey=${encodeURIComponent(cat.key)}`;
+
+          // ✅ hanya ini yang berubah
+          const to = `/books?category=${encodeURIComponent(cat.key)}`;
 
           return (
             <Link
@@ -86,8 +86,6 @@ export default function CategorySection() {
                   src={Icon}
                   alt={cat.label}
                   className="h-11 w-11 md:h-12 md:w-12"
-                  width={42}
-                  height={42}
                 />
               </div>
 
