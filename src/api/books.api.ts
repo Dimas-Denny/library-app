@@ -4,6 +4,7 @@ const BASE_URL = "https://library-backend-production-b9cf.up.railway.app/api";
 
 export type GetBooksParams = {
   categoryId?: number;
+  authorId?: number;
 };
 
 export type GetBooksResponse = {
@@ -21,6 +22,10 @@ export async function getBooks(
 
   if (params?.categoryId) {
     query.append("categoryId", String(params.categoryId));
+  }
+
+  if (params?.authorId) {
+    query.append("authorId", String(params.authorId));
   }
 
   const res = await fetch(`${BASE_URL}/books?${query.toString()}`);
