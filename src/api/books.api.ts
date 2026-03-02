@@ -1,15 +1,33 @@
-import { api } from "@/api/client";
 import type { Book } from "@/types/books";
-import type { ApiResponse } from "@/types/api";
 
-export async function getBooks(params?: { category?: string }) {
+const BASE_URL = "https://library-backend-production-b9cf.up.railway.app/api";
+
+export type GetBooksParams = {
+  categoryId?: number;
+};
+
+export type GetBooksResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    books: Book[];
+  };
+};
+
+export async function getBooks(
+  params?: GetBooksParams,
+): Promise<GetBooksResponse> {
   const query = new URLSearchParams();
 
-  if (params?.category) {
-    query.append("category", params.category);
+  if (params?.categoryId) {
+    query.append("categoryId", String(params.categoryId));
   }
 
-  const url = query.toString() ? `/books?${query.toString()}` : "/books";
+  const res = await fetch(`${BASE_URL}/books?${query.toString()}`);
 
-  return api<ApiResponse<Book[]>>(url);
+  if (!res.ok) {
+    throw new Error("Failed to fetch books");
+  }
+
+  return res.json();
 }

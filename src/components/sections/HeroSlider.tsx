@@ -1,8 +1,9 @@
 import React from "react";
 import welcome from "@/assets/png/welcome.png";
 import welcome1 from "@/assets/png/welcome1.png";
+import welcome2 from "@/assets/png/welcome2.png";
 
-const slides: string[] = [welcome, welcome1, welcome];
+const slides: string[] = [welcome, welcome1, welcome2];
 
 export default function HeroSlider() {
   const [current, setCurrent] = React.useState(0);
