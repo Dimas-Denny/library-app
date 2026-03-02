@@ -1,15 +1,11 @@
-import Navbar from "@/components/layout/Navbar";
 import HeroSlider from "@/components/sections/HeroSlider";
 import CategorySection from "@/components/sections/CategorySection";
 import RecommendationSection from "@/components/sections/RecommendationSection";
 import PopularAuthors from "@/components/sections/PopularAuthors";
-import Footer from "@/components/layout/Footer";
 
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <Navbar />
-
       <main
         className="
           mx-auto w-full max-w-6xl flex-1
@@ -23,8 +19,6 @@ export default function HomePage() {
         <RecommendationSection />
         <PopularAuthors />
       </main>
-
-      <Footer />
     </div>
   );
 }

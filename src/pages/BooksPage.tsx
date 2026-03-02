@@ -3,12 +3,12 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getBooks } from "@/api/books.api";
 import type { Book } from "@/types/books";
+import BookCard from "@/components/books/BookCard";
 
 export default function BooksPage() {
   const [params] = useSearchParams();
   const initialCategoryId = params.get("categoryId");
 
-  // 🔥 Ambil semua books (tidak lagi berdasarkan categoryId)
   const { data, isLoading } = useQuery({
     queryKey: ["books"],
     queryFn: () => getBooks(),
@@ -16,18 +16,14 @@ export default function BooksPage() {
 
   const books: Book[] = data?.data?.books ?? [];
 
-  // ⭐ Rating filter (single)
   const [minRating, setMinRating] = React.useState<number | null>(null);
 
-  // 📚 Category filter (multi)
   const [selectedCategories, setSelectedCategories] = React.useState<number[]>(
     initialCategoryId ? [Number(initialCategoryId)] : [],
   );
 
-  // 📱 Mobile filter toggle
   const [showFilter, setShowFilter] = React.useState(false);
 
-  // 🔥 FINAL FILTER LOGIC
   const filteredBooks = books.filter((b) => {
     const ratingPass = minRating !== null ? 4.9 >= minRating : true;
 
@@ -44,32 +40,12 @@ export default function BooksPage() {
       <h2 className="text-2xl font-bold">Book List</h2>
 
       {/* MOBILE FILTER BUTTON */}
-      {/* MOBILE FILTER CARD */}
       <div className="mt-4 md:hidden">
         <div
           onClick={() => setShowFilter((v) => !v)}
-          className="
-      flex items-center justify-between
-      rounded-xl bg-white
-      px-4 py-3
-      shadow-[0_8px_20px_rgba(0,0,0,0.06)]
-      cursor-pointer
-    "
+          className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer"
         >
           <span className="text-sm font-semibold">FILTER</span>
-
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-black/70"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="7" y1="12" x2="17" y2="12" />
-            <line x1="10" y1="18" x2="14" y2="18" />
-          </svg>
         </div>
       </div>
 
@@ -108,28 +84,7 @@ export default function BooksPage() {
 
           <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-5 md:gap-6">
             {filteredBooks.map((b) => (
-              <div
-                key={b.id}
-                className="overflow-hidden rounded-xl bg-white shadow-[0_12px_30px_rgba(0,0,0,0.06)] transition hover:shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
-              >
-                <div className="relative h-52 md:h-44">
-                  <img
-                    src={b.coverImage}
-                    alt={b.title}
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                </div>
-
-                <div className="p-3">
-                  <p className="text-sm font-semibold">{b.title}</p>
-                  <p className="mt-1 text-xs text-black/45">{b.author?.name}</p>
-
-                  <div className="mt-2 flex items-center gap-1 text-xs text-black/60">
-                    <span className="text-yellow-500">★</span>
-                    <span>4.9</span>
-                  </div>
-                </div>
-              </div>
+              <BookCard key={b.id} book={b} />
             ))}
           </div>
         </div>

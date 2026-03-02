@@ -36,3 +36,19 @@ export async function getBooks(
 
   return res.json();
 }
+
+export type GetBookDetailResponse = {
+  success: boolean;
+  message: string;
+  data: Book;
+};
+
+export async function getBookById(id: number): Promise<GetBookDetailResponse> {
+  const res = await fetch(`${BASE_URL}/books/${id}`);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch book detail");
+  }
+
+  return res.json();
+}
