@@ -17,7 +17,9 @@ type AuthState = {
 
 const initialState: AuthState = {
   token: localStorage.getItem("token"),
-  user: null,
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user") as string)
+    : null,
 };
 
 const authSlice = createSlice({
@@ -30,11 +32,14 @@ const authSlice = createSlice({
     },
     setUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
     logout(state) {
       state.token = null;
       state.user = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("borrowed");
     },
   },
 });

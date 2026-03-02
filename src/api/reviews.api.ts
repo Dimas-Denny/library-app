@@ -1,21 +1,37 @@
-import type { Review } from "@/types/review";
+import client from "@/lib/client";
+import type { BookReview, MyReview } from "@/types/review";
 
-const BASE_URL = "https://library-backend-production-b9cf.up.railway.app/api";
+/* ================= GET REVIEWS BY BOOK ================= */
+export const getBookReviews = async (bookId: number): Promise<BookReview[]> => {
+  const res = await client.get(`/reviews/book/${bookId}`);
 
-export type GetBookReviewsResponse = {
-  success: boolean;
-  message: string;
-  data: Review[];
+  const payload = res.data?.data;
+
+  if (Array.isArray(payload)) return payload;
+
+  if (Array.isArray(payload?.reviews)) return payload.reviews;
+
+  return [];
 };
 
-export async function getBookReviews(
-  bookId: number,
-): Promise<GetBookReviewsResponse> {
-  const res = await fetch(`${BASE_URL}/reviews/book/${bookId}`);
+/* ================= GET MY REVIEWS ================= */
+export const getMyReviews = async (): Promise<MyReview[]> => {
+  const res = await client.get("/me/reviews");
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch reviews");
-  }
+  const payload = res.data?.data;
 
-  return res.json();
-}
+  if (Array.isArray(payload)) return payload;
+
+  if (Array.isArray(payload?.reviews)) return payload.reviews;
+
+  return [];
+};
+
+/* ================= CREATE REVIEW ================= */
+export const createReview = async (payload: {
+  bookId: number;
+  star: number;
+  comment: string;
+}) => {
+  await client.post("/reviews", payload);
+};

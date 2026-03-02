@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import AuthorAvatar from "@/assets/svg/authors.svg";
 import BookIcon from "@/assets/svg/books.svg";
@@ -8,6 +8,7 @@ import BookCard from "@/components/books/BookCard";
 
 export default function AuthorDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const authorId = Number(id);
 
   const { data, isLoading } = useQuery({
@@ -17,13 +18,33 @@ export default function AuthorDetailPage() {
 
   const allBooks: Book[] = data?.data?.books ?? [];
 
-  // 🔥 filter di frontend
   const books = allBooks.filter((b) => b.authorId === authorId);
-
   const authorName = books[0]?.author?.name ?? "Author";
 
   return (
     <div className="px-4 md:px-16 py-8">
+      {/* 🔙 BACK BUTTON */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-6 flex items-center gap-2 text-sm font-medium text-black/70 hover:text-black transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        Back
+      </button>
+
       {/* AUTHOR CARD */}
       <div className="flex items-center gap-4 rounded-xl bg-white px-4 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.06)]">
         <div className="h-14 w-14 overflow-hidden rounded-full bg-primary-100 flex items-center justify-center shrink-0">

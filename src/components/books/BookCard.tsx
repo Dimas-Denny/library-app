@@ -19,7 +19,7 @@ export default function BookCard({ book }: Props) {
       "
     >
       {/* Cover */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-t-xl bg-gray-100">
+      <div className="relative aspect-3/4 w-full overflow-hidden rounded-t-xl bg-gray-100">
         <img
           src={book.coverImage}
           alt={book.title}
