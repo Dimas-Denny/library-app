@@ -12,11 +12,7 @@ type FilterType = "ALL" | "BORROWED" | "RETURNED" | "OVERDUE";
 export default function BorrowedListPage() {
   const queryClient = useQueryClient();
 
-  const {
-    data: loans = [],
-    isLoading,
-    isError,
-  } = useQuery<Loan[]>({
+  const { data: loans = [], isLoading } = useQuery<Loan[]>({
     queryKey: ["my-loans"],
     queryFn: getMyLoans,
   });
@@ -39,20 +35,17 @@ export default function BorrowedListPage() {
 
   function formatDate(date?: string) {
     if (!date) return "-";
-    const parsed = new Date(date);
-    if (isNaN(parsed.getTime())) return "-";
-
     return new Intl.DateTimeFormat("en-GB", {
       day: "2-digit",
       month: "long",
       year: "numeric",
-    }).format(parsed);
+    }).format(new Date(date));
   }
 
-  function getStatusBadge(status: string) {
+  function getStatusStyle(status: string) {
     if (status === "OVERDUE") return "bg-red-100 text-red-500";
     if (status === "RETURNED") return "bg-green-100 text-green-600";
-    return "bg-blue-100 text-blue-600";
+    return "bg-green-100 text-green-600";
   }
 
   const filteredLoans = loans
@@ -61,14 +54,11 @@ export default function BorrowedListPage() {
       loan.book?.title?.toLowerCase().includes(search.toLowerCase()),
     );
 
-  if (isLoading) return <div className="px-4 md:px-16 py-8">Loading...</div>;
-
-  if (isError)
-    return <div className="px-4 md:px-16 py-8">Error loading data</div>;
-
   function hasReviewed(bookId: number) {
     return myReviews.some((review) => review.book.id === bookId);
   }
+
+  if (isLoading) return <div className="px-4 md:px-16 py-8">Loading...</div>;
 
   return (
     <div className="px-4 md:px-16 py-8 space-y-8">
@@ -85,18 +75,26 @@ export default function BorrowedListPage() {
         className="w-full md:w-96 border rounded-full px-4 py-2 text-sm"
       />
 
-      {/* FILTER */}
+      {/* FILTER PILLS */}
       <div className="flex gap-3 flex-wrap">
         {(["ALL", "BORROWED", "RETURNED", "OVERDUE"] as FilterType[]).map(
           (type) => (
             <button
               key={type}
               onClick={() => setFilter(type)}
-              className={`px-4 py-1 rounded-full text-sm ${
-                filter === type ? "bg-primary-300 text-white" : "bg-black/5"
+              className={`px-4 py-1 rounded-full text-sm border transition ${
+                filter === type
+                  ? "border-primary-300 text-primary-300 bg-primary-50"
+                  : "border-black/10 text-black/60 bg-white"
               }`}
             >
-              {type}
+              {type === "ALL"
+                ? "All"
+                : type === "BORROWED"
+                  ? "Active"
+                  : type === "RETURNED"
+                    ? "Returned"
+                    : "Overdue"}
             </button>
           ),
         )}
@@ -113,23 +111,35 @@ export default function BorrowedListPage() {
               key={loan.id}
               className="bg-white rounded-2xl p-6 shadow space-y-4"
             >
-              {/* TOP */}
-              <div className="flex justify-between text-sm">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs ${getStatusBadge(
-                    loan.status,
-                  )}`}
-                >
-                  {loan.status}
-                </span>
+              {/* STATUS + DUE */}
+              <div className="flex justify-between items-center text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-black/60">Status</span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs ${getStatusStyle(
+                      loan.status,
+                    )}`}
+                  >
+                    {loan.status === "BORROWED"
+                      ? "Active"
+                      : loan.status === "RETURNED"
+                        ? "Returned"
+                        : "Overdue"}
+                  </span>
+                </div>
 
-                <span>Due: {formatDate(loan.dueAt)}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-black/60">Due Date</span>
+                  <span className="px-3 py-1 rounded-full text-xs bg-red-100 text-red-500">
+                    {formatDate(loan.dueAt)}
+                  </span>
+                </div>
               </div>
 
-              <hr />
+              <div className="h-px bg-black/5" />
 
               {/* CONTENT */}
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                 <div className="flex gap-4">
                   <img
                     src={book.coverImage}
@@ -138,8 +148,16 @@ export default function BorrowedListPage() {
                   />
 
                   <div>
-                    <p className="font-semibold">{book.title}</p>
+                    <span className="text-xs px-3 py-1 bg-black/5 rounded-full">
+                      {book.category?.name ?? "Category"}
+                    </span>
+
+                    <p className="font-semibold mt-2">{book.title}</p>
                     <p className="text-sm text-black/50">{book.author?.name}</p>
+
+                    <p className="text-xs mt-2 text-black/60">
+                      {formatDate(loan.borrowedAt)} · Duration 3 Days
+                    </p>
                   </div>
                 </div>
 
@@ -147,7 +165,7 @@ export default function BorrowedListPage() {
                 {loan.status === "BORROWED" && (
                   <button
                     onClick={() => returnMutation.mutate(loan.id)}
-                    className="px-6 py-2 rounded-full bg-black text-white text-sm"
+                    className="w-full md:w-auto px-6 py-2 rounded-full bg-black text-white text-sm"
                   >
                     Return Book
                   </button>
@@ -156,7 +174,7 @@ export default function BorrowedListPage() {
                 {loan.status === "RETURNED" && (
                   <button
                     onClick={() => setSelectedBook(book)}
-                    className="px-6 py-2 rounded-full bg-primary-300 text-white text-sm hover:opacity-90 transition"
+                    className="w-full md:w-auto px-6 py-2 rounded-full bg-primary-300 text-white text-sm"
                   >
                     {hasReviewed(book.id) ? "Edit Review" : "Give Review"}
                   </button>
@@ -167,7 +185,6 @@ export default function BorrowedListPage() {
         })}
       </div>
 
-      {/* REVIEW MODAL */}
       {selectedBook && (
         <ReviewModal
           book={selectedBook}

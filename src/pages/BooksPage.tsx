@@ -39,16 +39,58 @@ export default function BooksPage() {
     <div className="px-4 md:px-16 py-8">
       <h2 className="text-2xl font-bold">Book List</h2>
 
-      {/* MOBILE FILTER BUTTON */}
-      <div className="mt-4 md:hidden">
-        <div
+      {/* ================= MOBILE FILTER ================= */}
+      <div className="mt-4 md:hidden relative">
+        <button
           onClick={() => setShowFilter((v) => !v)}
-          className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer"
+          className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
         >
           <span className="text-sm font-semibold">FILTER</span>
-        </div>
+
+          <svg
+            viewBox="0 0 24 24"
+            className="h-5 w-5 text-black/60"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M4 6h16M7 12h10M10 18h4" />
+          </svg>
+        </button>
+
+        {showFilter && (
+          <div
+            className="
+              absolute left-0 top-full mt-3 w-full
+              rounded-2xl bg-white
+              shadow-[0_20px_50px_rgba(0,0,0,0.12)]
+              z-50
+            "
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-black/5">
+              <h3 className="text-sm font-semibold">Filter</h3>
+
+              <button
+                onClick={() => setShowFilter(false)}
+                className="text-sm text-black/60"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="p-5">
+              <FilterSidebar
+                minRating={minRating}
+                setMinRating={setMinRating}
+                selectedCategories={selectedCategories}
+                setSelectedCategories={setSelectedCategories}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* ================= DESKTOP LAYOUT ================= */}
       <div className="mt-6 flex gap-10">
         {/* DESKTOP SIDEBAR */}
         <aside className="hidden md:block md:w-72 lg:w-80 shrink-0">
@@ -59,18 +101,6 @@ export default function BooksPage() {
             setSelectedCategories={setSelectedCategories}
           />
         </aside>
-
-        {/* MOBILE FILTER PANEL */}
-        {showFilter && (
-          <div className="md:hidden mb-6 w-full">
-            <FilterSidebar
-              minRating={minRating}
-              setMinRating={setMinRating}
-              selectedCategories={selectedCategories}
-              setSelectedCategories={setSelectedCategories}
-            />
-          </div>
-        )}
 
         {/* BOOK GRID */}
         <div className="flex-1">
