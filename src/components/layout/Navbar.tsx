@@ -133,34 +133,54 @@ export default function Navbar() {
         <div className="md:hidden ml-auto flex items-center gap-4">
           {!isLoggedIn ? (
             <>
+              {/* SEARCH ICON */}
+              <button
+                onClick={() => navigate("/books")}
+                className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
+              >
+                🔍
+              </button>
+
               {/* CART ICON */}
               <button
                 onClick={() => navigate("/cart")}
                 className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
               >
                 <img src={Bag} alt="Cart" className="h-6 w-6" />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
+                    {cartItems.length}
+                  </span>
+                )}
               </button>
 
               {/* HAMBURGER */}
               <button
                 onClick={() => setMobileMenuOpen((v) => !v)}
-                className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
+                className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5 text-xl"
               >
                 ☰
               </button>
 
+              {/* MOBILE DROPDOWN */}
               {mobileMenuOpen && (
                 <div className="absolute left-0 top-16 w-full bg-white shadow-xl border-t border-black/10 z-50">
                   <div className="px-6 py-6 space-y-4 text-sm">
                     <button
-                      onClick={() => navigate("/login")}
+                      onClick={() => {
+                        navigate("/login");
+                        setMobileMenuOpen(false);
+                      }}
                       className="block w-full text-left font-semibold"
                     >
                       Login
                     </button>
 
                     <button
-                      onClick={() => navigate("/register")}
+                      onClick={() => {
+                        navigate("/register");
+                        setMobileMenuOpen(false);
+                      }}
                       className="block w-full text-left font-semibold text-primary-300"
                     >
                       Register
@@ -171,15 +191,19 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {/* CART */}
+              {/* LOGGED IN MOBILE (tetap sama) */}
               <button
                 onClick={() => navigate("/cart")}
                 className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
               >
                 <img src={Bag} alt="Cart" className="h-6 w-6" />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
+                    {cartItems.length}
+                  </span>
+                )}
               </button>
 
-              {/* AVATAR */}
               <button onClick={() => setMobileMenuOpen((v) => !v)}>
                 <img
                   src={AuthorsAvatar}
