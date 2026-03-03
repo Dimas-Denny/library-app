@@ -19,6 +19,9 @@ import BorrowedListPage from "./pages/BorrowedListPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import AdminRoute from "@/routes/AdminRoute";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminBookPreviewPage from "@/pages/admin/AdminBookPreviewPage";
+
+import AdminBookEditPage from "@/pages/admin/AdminBookEditPage";
 
 export default function App() {
   const location = useLocation();
@@ -65,6 +68,24 @@ export default function App() {
           element={
             <AdminRoute>
               <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/books/:id"
+          element={
+            <AdminRoute>
+              <AdminBookPreviewPage />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/books/:id/edit"
+          element={
+            <AdminRoute>
+              <AdminBookEditPage />
             </AdminRoute>
           }
         />

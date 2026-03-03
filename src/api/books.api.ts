@@ -1,5 +1,6 @@
 import type { Book } from "@/types/books";
 import client from "@/lib/client";
+import { api } from "@/api/client";
 
 const BASE_URL = "https://library-backend-production-b9cf.up.railway.app/api";
 
@@ -85,6 +86,30 @@ export type PaginatedAdminBooksResponse = {
   };
 };
 
+/* ======================
+   TYPES
+====================== */
+
+export type AdminBookDetailResponse = {
+  id: number;
+  title: string;
+  description: string;
+  coverImage: string;
+  rating: number;
+  reviewCount: number;
+  totalCopies: number;
+  availableCopies: number;
+  pages: number;
+  author?: {
+    id: number;
+    name: string;
+  };
+  category?: {
+    id: number;
+    name: string;
+  };
+};
+
 /* ================= ADMIN GET BOOKS ================= */
 
 export const getAdminBooks = async (
@@ -104,3 +129,68 @@ export const getAdminBooks = async (
 
   return res.data.data;
 };
+
+export async function getAdminBookById(
+  id: string,
+): Promise<AdminBookDetailResponse> {
+  const res = await api<{
+    success: boolean;
+    data: AdminBookDetailResponse;
+  }>(`/books/${id}`);
+
+  return res.data;
+}
+
+export type UpdateBookPayload = {
+  title: string;
+  description: string;
+  pages: number;
+  categoryId: number;
+  authorId: number;
+};
+
+export async function updateBook(id: string, payload: UpdateBookPayload) {
+  const res = await api<{
+    success: boolean;
+    data: unknown;
+  }>(`/books/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+
+  return res;
+}
+
+export type Author = {
+  id: number;
+  name: string;
+};
+
+export type Category = {
+  id: number;
+  name: string;
+};
+
+export async function getAuthors() {
+  const res = await api<{
+    success: boolean;
+    message: string;
+    data: {
+      authors: Author[];
+    };
+  }>("/authors");
+
+  return res.data.authors;
+}
+
+export async function getCategories() {
+  const res = await api<{
+    success: boolean;
+    message: string;
+    data: {
+      categories: Category[];
+    };
+  }>("/categories");
+
+  return res.data.categories;
+}
