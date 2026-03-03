@@ -1,6 +1,9 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import React from "react";
+import { useAppDispatch } from "@/store/hooks";
+import { setToken, setUser } from "@/store/authSlice";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -17,6 +20,21 @@ import ReviewsPage from "./pages/ReviewsPage";
 
 export default function App() {
   const location = useLocation();
+  const dispatch = useAppDispatch();
+
+  // 🔥 TAMBAHKAN INI
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    if (token) {
+      dispatch(setToken(token));
+    }
+
+    if (user) {
+      dispatch(setUser(JSON.parse(user)));
+    }
+  }, [dispatch]);
 
   const hideFooterOnly = location.pathname === "/borrow-success";
 
