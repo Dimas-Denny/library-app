@@ -18,14 +18,12 @@ export default function Navbar() {
 
   const token = useAppSelector((s) => s.auth.token);
   const user = useAppSelector((s) => s.auth.user);
+  const cartItems = useAppSelector((s) => s.cart.items);
+
   const isLoggedIn = Boolean(token);
-  console.log("USER:", user);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const cartItems = useAppSelector((s) => s.cart.items);
-
-  console.log("TOKEN:", token);
 
   /* ================= CLICK OUTSIDE DESKTOP ================= */
   React.useEffect(() => {
@@ -52,8 +50,6 @@ export default function Navbar() {
 
   function handleLogout() {
     dispatch(logout());
-    setOpen(false);
-    setMobileMenuOpen(false);
     navigate("/login", { replace: true });
   }
 
@@ -92,7 +88,14 @@ export default function Navbar() {
 
         {/* ================= DESKTOP RIGHT ================= */}
         <div className="hidden md:flex items-center gap-4 ml-auto">
-          {!isLoggedIn ? null : (
+          {!isLoggedIn ? (
+            <button
+              onClick={() => navigate("/login")}
+              className="px-5 py-2 rounded-full bg-primary-300 text-white text-sm font-semibold hover:opacity-90 transition"
+            >
+              Login
+            </button>
+          ) : (
             <div className="relative flex items-center gap-3">
               {/* CART */}
               <button
@@ -118,12 +121,9 @@ export default function Navbar() {
                   alt="Avatar"
                   className="h-10 w-10 rounded-full object-cover"
                 />
-
                 <span className="text-sm font-semibold text-black">
                   {user?.name ?? "User"}
                 </span>
-
-                {/* Chevron */}
                 <svg
                   viewBox="0 0 24 24"
                   className={`h-5 w-5 transition-transform duration-200 ${
@@ -137,7 +137,7 @@ export default function Navbar() {
                 </svg>
               </button>
 
-              {/* DESKTOP DROPDOWN */}
+              {/* DROPDOWN */}
               {open && (
                 <div
                   ref={menuRef}
@@ -197,113 +197,111 @@ export default function Navbar() {
         </div>
 
         {/* ================= MOBILE ================= */}
-        {isLoggedIn && (
-          <div className="relative flex items-center md:hidden flex-1 justify-end gap-4">
-            {/* SEARCH ICON */}
-            {!searchMode && (
-              <button
-                onClick={() => setSearchMode(true)}
-                className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
-              >
-                🔍
-              </button>
-            )}
-
-            {/* MOBILE SEARCH INPUT */}
-            {searchMode && (
-              <form
-                onSubmit={onSubmitSearch}
-                className="flex-1 flex items-center gap-3"
-              >
-                <input
-                  ref={searchRef}
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search book"
-                  className="h-10 flex-1 rounded-full border border-black/15 px-4 text-sm outline-none"
-                />
-                <button onClick={() => setSearchMode(false)}>✕</button>
-              </form>
-            )}
-
-            {!searchMode && (
-              <>
-                {/* CART */}
+        <div className="md:hidden ml-auto flex items-center gap-3">
+          {!isLoggedIn ? (
+            <button
+              onClick={() => navigate("/login")}
+              className="px-4 py-2 rounded-full bg-primary-300 text-white text-sm font-semibold"
+            >
+              Login
+            </button>
+          ) : (
+            <>
+              {/* SEARCH */}
+              {!searchMode && (
                 <button
-                  onClick={() => navigate("/cart")}
-                  className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
+                  onClick={() => setSearchMode(true)}
+                  className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
                 >
-                  <img src={Bag} alt="Cart" className="h-6 w-6" />
-                  {cartItems.length > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
-                      {cartItems.length}
-                    </span>
-                  )}
+                  🔍
                 </button>
+              )}
 
-                {/* AVATAR */}
-                <button onClick={() => setMobileMenuOpen((v) => !v)}>
-                  <img
-                    src={AuthorsAvatar}
-                    alt="Avatar"
-                    className="h-9 w-9 rounded-full"
+              {searchMode && (
+                <form
+                  onSubmit={onSubmitSearch}
+                  className="flex-1 flex items-center gap-3"
+                >
+                  <input
+                    ref={searchRef}
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Search book"
+                    className="h-10 flex-1 rounded-full border border-black/15 px-4 text-sm outline-none"
                   />
-                </button>
-              </>
-            )}
+                  <button onClick={() => setSearchMode(false)}>✕</button>
+                </form>
+              )}
 
-            {/* MOBILE DROPDOWN PANEL */}
-            {mobileMenuOpen && (
-              <div className="absolute left-0 top-full w-full bg-white shadow-xl border-t border-black/10 z-50">
-                <div className="px-6 py-6 space-y-5 text-sm">
-                  <div>
-                    <p className="font-semibold">{user?.name}</p>
-                    <p className="text-xs text-black/50">{user?.email}</p>
+              {!searchMode && (
+                <>
+                  {/* CART */}
+                  <button
+                    onClick={() => navigate("/cart")}
+                    className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
+                  >
+                    <img src={Bag} alt="Cart" className="h-6 w-6" />
+                    {cartItems.length > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
+                        {cartItems.length}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* AVATAR */}
+                  <button onClick={() => setMobileMenuOpen((v) => !v)}>
+                    <img
+                      src={AuthorsAvatar}
+                      alt="Avatar"
+                      className="h-9 w-9 rounded-full"
+                    />
+                  </button>
+                </>
+              )}
+
+              {mobileMenuOpen && (
+                <div className="absolute left-0 top-16 w-full bg-white shadow-xl border-t border-black/10 z-50">
+                  <div className="px-6 py-6 space-y-5 text-sm">
+                    <div>
+                      <p className="font-semibold">{user?.name}</p>
+                      <p className="text-xs text-black/50">{user?.email}</p>
+                    </div>
+
+                    <div className="h-px bg-black/10" />
+
+                    <button
+                      onClick={() => navigate("/profile")}
+                      className="block w-full text-left"
+                    >
+                      Profile
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/borrowed-list")}
+                      className="block w-full text-left"
+                    >
+                      Borrowed List
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/reviews")}
+                      className="block w-full text-left"
+                    >
+                      Reviews
+                    </button>
+
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left text-red-500"
+                    >
+                      Logout
+                    </button>
                   </div>
-
-                  <div className="h-px bg-black/10" />
-
-                  <button
-                    onClick={() => {
-                      navigate("/profile");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left"
-                  >
-                    Profile
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      navigate("/borrowed-list");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left"
-                  >
-                    Borrowed List
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      navigate("/reviews");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left"
-                  >
-                    Reviews
-                  </button>
-
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left text-red-500"
-                  >
-                    Logout
-                  </button>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       <div className="h-px w-full bg-black/10" />
