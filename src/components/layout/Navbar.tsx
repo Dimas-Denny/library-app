@@ -25,6 +25,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const cartItems = useAppSelector((s) => s.cart.items);
 
+  console.log("TOKEN:", token);
+
   /* ================= CLICK OUTSIDE DESKTOP ================= */
   React.useEffect(() => {
     function onDown(e: MouseEvent) {
