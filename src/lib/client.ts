@@ -1,18 +1,44 @@
 import axios from "axios";
-import { store } from "@/store";
+
+/* ================= AXIOS INSTANCE ================= */
 
 const client = axios.create({
-  baseURL: "https://library-backend-production-b9cf.up.railway.app/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: false, // JWT based auth
 });
 
-client.interceptors.request.use((config) => {
-  const token = store.getState().auth.token;
+/* ================= REQUEST INTERCEPTOR ================= */
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+client.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
 
-  return config;
-});
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+/* ================= RESPONSE INTERCEPTOR ================= */
+
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // 🔥 Auto logout kalau token expired / invalid
+    if (error.response?.status === 401) {
+      console.warn("Unauthorized - redirecting to login");
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export default client;

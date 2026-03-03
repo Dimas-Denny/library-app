@@ -43,7 +43,11 @@ export default function LoginPage() {
       dispatch(setToken(token));
       dispatch(setUser(user));
 
-      navigate("/", { replace: true });
+      if (user.role === "ADMIN") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     },
     onError: (err) => {
       setErrors((p) => ({

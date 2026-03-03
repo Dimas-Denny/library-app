@@ -17,6 +17,8 @@ import BorrowSuccessPage from "./pages/BorrowSuccessPage";
 import ProfilePage from "./pages/ProfilePage";
 import BorrowedListPage from "./pages/BorrowedListPage";
 import ReviewsPage from "./pages/ReviewsPage";
+import AdminRoute from "@/routes/AdminRoute";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 export default function App() {
   const location = useLocation();
@@ -58,6 +60,14 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/borrowed-list" element={<BorrowedListPage />} />
         <Route path="/reviews" element={<ReviewsPage />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
       </Routes>
 
       {!hideLayout && !hideFooterOnly && <Footer />}
