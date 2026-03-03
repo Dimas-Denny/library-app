@@ -1,5 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export type User = {
   id: number;
@@ -15,31 +14,46 @@ type AuthState = {
   user: User | null;
 };
 
+// ✅ restore dari localStorage saat pertama load
+const tokenFromStorage =
+  typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+const userFromStorage =
+  typeof window !== "undefined" ? localStorage.getItem("user") : null;
+
 const initialState: AuthState = {
-  token: localStorage.getItem("token"),
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user") as string)
-    : null,
+  token: tokenFromStorage ?? null,
+  user: userFromStorage ? JSON.parse(userFromStorage) : null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setToken(state, action: PayloadAction<string>) {
+    setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
-      localStorage.setItem("token", action.payload);
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", action.payload);
+      }
     },
-    setUser(state, action: PayloadAction<User>) {
+
+    setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(action.payload));
+      }
     },
-    logout(state) {
+
+    logout: (state) => {
       state.token = null;
       state.user = null;
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("borrowed");
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
     },
   },
 });
