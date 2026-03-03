@@ -36,6 +36,10 @@ export default function LoginPage() {
     onSuccess: (res) => {
       const { token, user } = res.data;
 
+      // 🔥 WAJIB TAMBAHKAN INI
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
       dispatch(setToken(token));
       dispatch(setUser(user));
 
