@@ -2,9 +2,15 @@
 
 A modern **online library system** where users can browse books, borrow them, and manage their reading activity.
 
-This project includes **user features** and **admin management tools**.
+This project includes both **user features** and **admin management tools**, built with a modern **React + TypeScript architecture** and integrated with a REST API backend.
 
-Built with a modern **React + TypeScript architecture** and integrated with a REST API backend.
+---
+
+# 🌐 Live Demo
+
+You can access the deployed application here:
+
+🔗 https://library-app-zeta-murex.vercel.app/
 
 ---
 
@@ -13,7 +19,7 @@ Built with a modern **React + TypeScript architecture** and integrated with a RE
 ## 👤 User Features
 
 - Browse available books
-- View book details
+- View detailed book information
 - See ratings and reviews
 - Add books to cart
 - Borrow books through checkout
@@ -147,11 +153,16 @@ Create Loan API
 Borrow Success
 ```
 
+The system prevents:
+
+- borrowing the same book twice
+- borrowing unavailable books
+
 ---
 
 # 🚀 Getting Started
 
-## 1. Clone Repository
+## 1️⃣ Clone Repository
 
 ```
 git clone https://github.com/your-username/library-app.git
@@ -160,7 +171,7 @@ cd library-app
 
 ---
 
-## 2. Install Dependencies
+## 2️⃣ Install Dependencies
 
 ```
 npm install
@@ -168,7 +179,7 @@ npm install
 
 ---
 
-## 3. Run Development Server
+## 3️⃣ Run Development Server
 
 ```
 npm run dev
@@ -184,14 +195,14 @@ http://localhost:5173
 
 # 📌 Future Improvements
 
-Planned improvements for this project:
+Possible improvements for this project:
 
-- Book search filtering
+- Advanced book search filtering
 - User profile editing
 - Borrow history page
 - Admin analytics dashboard
-- Pagination optimization
 - Notification system
+- Pagination optimization
 
 ---
 
@@ -199,7 +210,7 @@ Planned improvements for this project:
 
 Developed by **Dimas Denny**
 
-This project was built as part of a **modern frontend portfolio project** focusing on:
+This project was created as part of a **modern frontend portfolio project** focusing on:
 
 - scalable React architecture
 - API integration
