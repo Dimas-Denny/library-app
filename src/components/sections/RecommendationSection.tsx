@@ -10,7 +10,7 @@ export default function RecommendationSection() {
     queryFn: () => getBooks(),
   });
 
-  const books: Book[] = data?.data?.books ?? [];
+  const books: Book[] = data?.books ?? [];
 
   // 🔥 jumlah yang ditampilkan
   const [visibleCount, setVisibleCount] = React.useState(10);

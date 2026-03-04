@@ -2,7 +2,7 @@ import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getBooks } from "@/api/books.api";
-import type { Book } from "@/types/books";
+
 import BookCard from "@/components/books/BookCard";
 
 export default function BooksPage() {
@@ -14,7 +14,7 @@ export default function BooksPage() {
     queryFn: () => getBooks(),
   });
 
-  const books: Book[] = data?.data?.books ?? [];
+  const books = data?.books ?? [];
 
   const [minRating, setMinRating] = React.useState<number | null>(null);
 

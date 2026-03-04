@@ -9,13 +9,9 @@ export type GetBooksParams = {
 };
 
 export type GetBooksResponse = {
-  success: boolean;
-  message: string;
-  data: {
-    books: Book[];
-    total?: number;
-    page?: number;
-  };
+  books: Book[];
+  total?: number;
+  page?: number;
 };
 
 /* ================= USER BOOK API ================= */
@@ -23,11 +19,15 @@ export type GetBooksResponse = {
 export const getBooks = async (
   params?: GetBooksParams,
 ): Promise<GetBooksResponse> => {
-  const res = await client.get("/books", {
-    params,
-  });
+  const res = await client.get("/books", { params });
 
-  return res.data.data;
+  const data = res.data.data;
+
+  return {
+    books: data.books,
+    total: data.total,
+    page: data.page,
+  };
 };
 
 export const getBookById = async (id: number): Promise<Book> => {
@@ -66,28 +66,6 @@ export type PaginatedAdminBooksResponse = {
   };
 };
 
-/* ================= ADMIN BOOK DETAIL ================= */
-
-export type AdminBookDetailResponse = {
-  id: number;
-  title: string;
-  description: string;
-  coverImage: string;
-  rating: number;
-  reviewCount: number;
-  totalCopies: number;
-  availableCopies: number;
-  pages: number;
-  author?: {
-    id: number;
-    name: string;
-  };
-  category?: {
-    id: number;
-    name: string;
-  };
-};
-
 /* ================= ADMIN BOOK LIST ================= */
 
 export const getAdminBooks = async (
@@ -109,6 +87,26 @@ export const getAdminBooks = async (
 };
 
 /* ================= ADMIN BOOK DETAIL ================= */
+
+export type AdminBookDetailResponse = {
+  id: number;
+  title: string;
+  description: string;
+  coverImage: string;
+  rating: number;
+  reviewCount: number;
+  totalCopies: number;
+  availableCopies: number;
+  pages: number;
+  author?: {
+    id: number;
+    name: string;
+  };
+  category?: {
+    id: number;
+    name: string;
+  };
+};
 
 export const getAdminBookById = async (
   id: string,
