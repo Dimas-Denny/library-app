@@ -34,25 +34,18 @@ export default function LoginPage() {
   const mLogin = useMutation({
     mutationFn: login,
     onSuccess: (res) => {
-      console.log("FULL LOGIN RESPONSE:", res);
-
       const { token, user } = res.data;
 
-      console.log("USER ROLE:", user.role);
-
+      // simpan ke localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
+      // simpan ke redux
       dispatch(setToken(token));
       dispatch(setUser(user));
 
-      if (user.role === "ADMIN") {
-        console.log("Redirecting to ADMIN dashboard");
-        navigate("/admin", { replace: true });
-      } else {
-        console.log("Redirecting to USER homepage");
-        navigate("/", { replace: true });
-      }
+      // semua user (termasuk admin) ke homepage
+      navigate("/", { replace: true });
     },
     onError: (err) => {
       setErrors((p) => ({
@@ -146,8 +139,7 @@ export default function LoginPage() {
                 type="button"
                 disabled={mLogin.isPending}
                 onClick={() => setShow((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 grid h-8 w-8 place-items-center rounded-full hover:bg-black/5 active:bg-black/10 disabled:opacity-60"
-                aria-label={show ? "Hide password" : "Show password"}
+                className="absolute right-3 top-1/2 -translate-y-1/2 grid h-8 w-8 place-items-center rounded-full hover:bg-black/5"
               >
                 <EyeIcon open={show} />
               </button>
@@ -164,18 +156,11 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={mLogin.isPending}
-            className="
-              h-12 w-full rounded-full
-              bg-primary-300 text-white
-              text-sm font-semibold
-              transition hover:opacity-95 active:scale-[0.99]
-              disabled:opacity-60 disabled:active:scale-100
-            "
+            className="h-12 w-full rounded-full bg-primary-300 text-white text-sm font-semibold transition hover:opacity-95 disabled:opacity-60"
           >
             {mLogin.isPending ? "Logging in..." : "Login"}
           </button>
 
-          {/* Bottom */}
           <p className="pt-1 text-center text-xs font-semibold">
             Don&apos;t have an account?{" "}
             <button
@@ -200,8 +185,6 @@ function EyeIcon({ open }: { open: boolean }) {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
     >
       {open ? (
         <>

@@ -20,18 +20,17 @@ export default function Navbar() {
   const cartItems = useAppSelector((s) => s.cart.items);
 
   const isLoggedIn = Boolean(token);
+  const isAdmin = user?.role === "ADMIN";
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  /* ================= AUTO FOCUS MOBILE SEARCH ================= */
   React.useEffect(() => {
     if (mobileSearch) {
       setTimeout(() => searchRef.current?.focus(), 0);
     }
   }, [mobileSearch]);
 
-  /* ================= CLICK OUTSIDE DESKTOP ================= */
   React.useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (!open) return;
@@ -61,13 +60,13 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       <div className="relative mx-auto flex h-16 w-full items-center px-4 md:px-16">
-        {/* ================= LEFT ================= */}
+        {/* LEFT */}
         <Link to="/" className="flex items-center gap-2">
           <img src={Logo} alt="Booky" className="h-10 w-10" />
           <span className="hidden md:block text-xl font-semibold">Booky</span>
         </Link>
 
-        {/* ================= DESKTOP SEARCH ================= */}
+        {/* DESKTOP SEARCH */}
         {isLoggedIn && (
           <div className="hidden md:flex flex-1 justify-center px-10">
             <form onSubmit={handleSearchSubmit} className="w-full max-w-xl">
@@ -81,7 +80,7 @@ export default function Navbar() {
           </div>
         )}
 
-        {/* ================= DESKTOP RIGHT ================= */}
+        {/* DESKTOP RIGHT */}
         <div className="hidden md:flex items-center gap-4 ml-auto">
           {!isLoggedIn ? (
             <>
@@ -114,7 +113,7 @@ export default function Navbar() {
                 )}
               </button>
 
-              {/* AVATAR + NAME */}
+              {/* AVATAR */}
               <button
                 onClick={() => setOpen((v) => !v)}
                 className="flex items-center gap-3"
@@ -127,6 +126,7 @@ export default function Navbar() {
                 <span className="text-sm font-semibold">
                   {user?.name ?? "User"}
                 </span>
+
                 <svg
                   viewBox="0 0 24 24"
                   className={`h-5 w-5 transition ${open ? "rotate-180" : ""}`}
@@ -175,6 +175,23 @@ export default function Navbar() {
                       Reviews
                     </button>
 
+                    {/* ADMIN MENU */}
+                    {isAdmin && (
+                      <>
+                        <div className="border-t border-black/10 my-2"></div>
+
+                        <button
+                          onClick={() => {
+                            navigate("/admin");
+                            setOpen(false);
+                          }}
+                          className="block w-full text-left text-blue-600 font-semibold hover:opacity-70 transition"
+                        >
+                          Admin Dashboard
+                        </button>
+                      </>
+                    )}
+
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left text-red-500 hover:opacity-70 transition"
@@ -188,7 +205,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* ================= MOBILE ================= */}
+        {/* MOBILE */}
         <div className="md:hidden ml-auto flex items-center gap-4">
           {mobileSearch ? (
             <form
@@ -213,7 +230,6 @@ export default function Navbar() {
             </form>
           ) : (
             <>
-              {/* SEARCH */}
               <button
                 onClick={() => setMobileSearch(true)}
                 className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
@@ -221,7 +237,6 @@ export default function Navbar() {
                 🔍
               </button>
 
-              {/* CART */}
               <button
                 onClick={() => navigate("/cart")}
                 className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
@@ -234,7 +249,6 @@ export default function Navbar() {
                 )}
               </button>
 
-              {/* AVATAR */}
               <button onClick={() => setMobileMenuOpen((v) => !v)}>
                 <img
                   src={AuthorsAvatar}
@@ -243,7 +257,6 @@ export default function Navbar() {
                 />
               </button>
 
-              {/* MOBILE DROPDOWN */}
               {mobileMenuOpen && (
                 <div className="absolute left-0 top-16 w-full bg-white rounded-b-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] border-t border-black/5 z-50">
                   <div className="px-6 py-8 space-y-6 text-sm">
@@ -276,6 +289,23 @@ export default function Navbar() {
                     >
                       Reviews
                     </button>
+
+                    {/* ADMIN MOBILE */}
+                    {isAdmin && (
+                      <>
+                        <div className="border-t border-black/10 my-2"></div>
+
+                        <button
+                          onClick={() => {
+                            navigate("/admin");
+                            setMobileMenuOpen(false);
+                          }}
+                          className="block w-full text-left text-blue-600 font-semibold"
+                        >
+                          Admin Dashboard
+                        </button>
+                      </>
+                    )}
 
                     <button
                       onClick={handleLogout}
