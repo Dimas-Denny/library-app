@@ -3,6 +3,7 @@ import AdminTabs from "@/components/admin/AdminTabs";
 import UserTable from "@/components/admin/UserTable";
 import AdminBookListPage from "@/pages/admin/AdminBookListPage";
 import { useLocation } from "react-router-dom";
+import AdminBorrowedListPage from "@/pages/admin/AdminBorrowedListPage";
 
 export default function AdminDashboard() {
   const location = useLocation();
@@ -23,11 +24,7 @@ export default function AdminDashboard() {
 
       {activeTab === "USER" && <UserTable />}
       {activeTab === "BOOK" && <AdminBookListPage />}
-      {activeTab === "BORROWED" && (
-        <div className="bg-white rounded-2xl p-10 shadow text-center text-black/50">
-          Coming Soon
-        </div>
-      )}
+      {activeTab === "BORROWED" && <AdminBorrowedListPage />}
     </div>
   );
 }

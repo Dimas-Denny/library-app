@@ -22,6 +22,8 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminBookPreviewPage from "@/pages/admin/AdminBookPreviewPage";
 
 import AdminBookEditPage from "@/pages/admin/AdminBookEditPage";
+import { Toaster } from "react-hot-toast";
+import AdminBookCreatePage from "./pages/admin/AdminBookCreatePage";
 
 export default function App() {
   const location = useLocation();
@@ -89,7 +91,39 @@ export default function App() {
             </AdminRoute>
           }
         />
+        <Route path="/admin/books/create" element={<AdminBookCreatePage />} />
       </Routes>
+
+      <Toaster
+        position="top-right"
+        gutter={12}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            borderRadius: "16px",
+            padding: "12px 16px",
+            background: "#fff",
+            color: "#111",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+            fontSize: "14px",
+            fontWeight: 500,
+          },
+
+          success: {
+            iconTheme: {
+              primary: "#22c55e",
+              secondary: "#fff",
+            },
+          },
+
+          error: {
+            iconTheme: {
+              primary: "#ef4444",
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
 
       {!hideLayout && !hideFooterOnly && <Footer />}
     </>

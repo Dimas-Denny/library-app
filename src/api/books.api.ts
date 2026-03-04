@@ -1,8 +1,7 @@
-import type { Book } from "@/types/books";
 import client from "@/lib/client";
-import { api } from "@/api/client";
+import type { Book } from "@/types/books";
 
-const BASE_URL = "https://library-backend-production-b9cf.up.railway.app/api";
+/* ================= USER BOOK TYPES ================= */
 
 export type GetBooksParams = {
   categoryId?: number;
@@ -10,50 +9,25 @@ export type GetBooksParams = {
 };
 
 export type GetBooksResponse = {
-  success: boolean;
-  message: string;
-  data: {
-    books: Book[];
-  };
+  books: Book[];
 };
 
-export async function getBooks(
+/* ================= USER BOOK API ================= */
+
+export const getBooks = async (
   params?: GetBooksParams,
-): Promise<GetBooksResponse> {
-  const query = new URLSearchParams();
+): Promise<GetBooksResponse> => {
+  const res = await client.get("/books", {
+    params,
+  });
 
-  if (params?.categoryId) {
-    query.append("categoryId", String(params.categoryId));
-  }
-
-  if (params?.authorId) {
-    query.append("authorId", String(params.authorId));
-  }
-
-  const res = await fetch(`${BASE_URL}/books?${query.toString()}`);
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch books");
-  }
-
-  return res.json();
-}
-
-export type GetBookDetailResponse = {
-  success: boolean;
-  message: string;
-  data: Book;
+  return res.data.data;
 };
 
-export async function getBookById(id: number): Promise<GetBookDetailResponse> {
-  const res = await fetch(`${BASE_URL}/books/${id}`);
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch book detail");
-  }
-
-  return res.json();
-}
+export const getBookById = async (id: number): Promise<Book> => {
+  const res = await client.get(`/books/${id}`);
+  return res.data.data;
+};
 
 /* ================= ADMIN TYPES ================= */
 
@@ -86,9 +60,7 @@ export type PaginatedAdminBooksResponse = {
   };
 };
 
-/* ======================
-   TYPES
-====================== */
+/* ================= ADMIN BOOK DETAIL ================= */
 
 export type AdminBookDetailResponse = {
   id: number;
@@ -110,7 +82,7 @@ export type AdminBookDetailResponse = {
   };
 };
 
-/* ================= ADMIN GET BOOKS ================= */
+/* ================= ADMIN BOOK LIST ================= */
 
 export const getAdminBooks = async (
   page: number,
@@ -130,16 +102,16 @@ export const getAdminBooks = async (
   return res.data.data;
 };
 
-export async function getAdminBookById(
-  id: string,
-): Promise<AdminBookDetailResponse> {
-  const res = await api<{
-    success: boolean;
-    data: AdminBookDetailResponse;
-  }>(`/books/${id}`);
+/* ================= ADMIN BOOK DETAIL ================= */
 
-  return res.data;
-}
+export const getAdminBookById = async (
+  id: string,
+): Promise<AdminBookDetailResponse> => {
+  const res = await client.get(`/books/${id}`);
+  return res.data.data;
+};
+
+/* ================= UPDATE BOOK ================= */
 
 export type UpdateBookPayload = {
   title: string;
@@ -149,48 +121,66 @@ export type UpdateBookPayload = {
   authorId: number;
 };
 
-export async function updateBook(id: string, payload: UpdateBookPayload) {
-  const res = await api<{
-    success: boolean;
-    data: unknown;
-  }>(`/books/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload),
+export const updateBook = async (id: string, payload: FormData) => {
+  const res = await client.put(`/books/${id}`, payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
 
-  return res;
-}
+  return res.data.data;
+};
+
+/* ================= AUTHORS ================= */
 
 export type Author = {
   id: number;
   name: string;
 };
 
+export const getAuthors = async (): Promise<Author[]> => {
+  const res = await client.get("/authors");
+  return res.data.data.authors;
+};
+
+/* ================= CATEGORIES ================= */
+
 export type Category = {
   id: number;
   name: string;
 };
 
-export async function getAuthors() {
-  const res = await api<{
-    success: boolean;
-    message: string;
-    data: {
-      authors: Author[];
-    };
-  }>("/authors");
+export const getCategories = async (): Promise<Category[]> => {
+  const res = await client.get("/categories");
+  return res.data.data.categories;
+};
 
-  return res.data.authors;
-}
+/* ================= DELETE BOOK ================= */
 
-export async function getCategories() {
-  const res = await api<{
-    success: boolean;
-    message: string;
-    data: {
-      categories: Category[];
-    };
-  }>("/categories");
+export const deleteBook = async (id: number) => {
+  const res = await client.delete(`/books/${id}`);
+  return res.data;
+};
 
-  return res.data.categories;
+/* ================= ADD BOOK ================= */
+
+export type CreateBookPayload = {
+  title: string;
+  isbn: string;
+  description: string;
+  pages: number;
+  authorId: number;
+  categoryId: number;
+  totalCopies: number;
+  coverImage?: string | null;
+};
+
+export async function createBook(payload: FormData) {
+  const res = await client.post("/books", payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return res.data;
 }
