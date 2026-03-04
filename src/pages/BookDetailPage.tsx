@@ -20,7 +20,7 @@ export default function BookDetailPage() {
     enabled: !!id,
   });
 
-  const book: Book | undefined = data?.data;
+  const book: Book | undefined = data;
 
   /* ================= REVIEWS ================= */
   const { data: reviews = [], isLoading: reviewsLoading } = useQuery<

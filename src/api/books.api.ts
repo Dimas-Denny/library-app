@@ -9,7 +9,13 @@ export type GetBooksParams = {
 };
 
 export type GetBooksResponse = {
-  books: Book[];
+  success: boolean;
+  message: string;
+  data: {
+    books: Book[];
+    total?: number;
+    page?: number;
+  };
 };
 
 /* ================= USER BOOK API ================= */
