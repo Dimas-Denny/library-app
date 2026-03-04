@@ -34,9 +34,12 @@ export default function LoginPage() {
   const mLogin = useMutation({
     mutationFn: login,
     onSuccess: (res) => {
+      console.log("FULL LOGIN RESPONSE:", res);
+
       const { token, user } = res.data;
 
-      // 🔥 WAJIB TAMBAHKAN INI
+      console.log("USER ROLE:", user.role);
+
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -44,8 +47,10 @@ export default function LoginPage() {
       dispatch(setUser(user));
 
       if (user.role === "ADMIN") {
+        console.log("Redirecting to ADMIN dashboard");
         navigate("/admin", { replace: true });
       } else {
+        console.log("Redirecting to USER homepage");
         navigate("/", { replace: true });
       }
     },

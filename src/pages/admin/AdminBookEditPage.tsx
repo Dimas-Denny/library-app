@@ -81,7 +81,11 @@ export default function AdminBookEditPage() {
       <div className="w-full max-w-2xl">
         {/* HEADER */}
         <button
-          onClick={() => navigate("/admin", { state: { aciteveTab: "BOOK" } })}
+          onClick={() =>
+            navigate("/admin", {
+              state: { activeTab: "BOOK" },
+            })
+          }
           className="flex items-center gap-2 text-sm text-black/60 mb-8"
         >
           <ArrowLeft size={16} />

@@ -14,9 +14,12 @@ type AuthState = {
   user: User | null;
 };
 
+const savedToken = localStorage.getItem("token");
+const savedUser = localStorage.getItem("user");
+
 const initialState: AuthState = {
-  token: null,
-  user: null,
+  token: savedToken,
+  user: savedUser ? JSON.parse(savedUser) : null,
 };
 
 const authSlice = createSlice({
@@ -25,10 +28,22 @@ const authSlice = createSlice({
   reducers: {
     setToken: (state, action: PayloadAction<string | null>) => {
       state.token = action.payload;
+
+      if (action.payload) {
+        localStorage.setItem("token", action.payload);
+      } else {
+        localStorage.removeItem("token");
+      }
     },
 
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
+
+      if (action.payload) {
+        localStorage.setItem("user", JSON.stringify(action.payload));
+      } else {
+        localStorage.removeItem("user");
+      }
     },
 
     logout: (state) => {

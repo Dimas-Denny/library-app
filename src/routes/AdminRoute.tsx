@@ -9,13 +9,17 @@ export default function AdminRoute({ children }: Props) {
   const token = useAppSelector((s) => s.auth.token);
   const user = useAppSelector((s) => s.auth.user);
 
-  // 🚫 belum login
-  if (!token) {
+  // fallback dari localStorage (penting untuk production)
+  const savedUser = localStorage.getItem("user");
+  const localUser = savedUser ? JSON.parse(savedUser) : null;
+
+  const role = user?.role ?? localUser?.role;
+
+  if (!token && !localStorage.getItem("token")) {
     return <Navigate to="/login" replace />;
   }
 
-  // 🚫 bukan admin
-  if (user?.role !== "ADMIN") {
+  if (role !== "ADMIN") {
     return <Navigate to="/" replace />;
   }
 
