@@ -3,6 +3,7 @@ import { ArrowLeft, Upload, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
 
 import {
   createBook,
@@ -49,8 +50,12 @@ export default function AdminBookCreatePage() {
       toast.success("Book added successfully");
       navigate("/admin");
     },
-    onError: () => {
-      toast.error("Failed to add book");
+    onError: (error: AxiosError<{ message?: string }>) => {
+      console.error("CREATE BOOK ERROR:", error);
+
+      const message = error.response?.data?.message || "Failed to add book";
+
+      toast.error(message);
     },
   });
 
