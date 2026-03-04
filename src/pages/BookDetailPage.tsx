@@ -51,6 +51,15 @@ export default function BookDetailPage() {
     setTimeout(() => setAdded(false), 1200);
   }
 
+  function handleBorrow() {
+    if (!book) return;
+
+    dispatch(addToCart(book));
+
+    navigate("/checkout", {
+      state: { books: [book] },
+    });
+  }
   /* ================= STATES ================= */
   if (isLoading) {
     return <div className="px-4 md:px-16 py-10">Loading book...</div>;
@@ -164,14 +173,15 @@ export default function BookDetailPage() {
             </button>
 
             <button
+              onClick={handleBorrow}
               disabled={book.availableCopies === 0}
               className={`px-6 py-2 rounded-full text-white text-sm transition
-    ${
-      book.availableCopies === 0
-        ? "bg-gray-300 cursor-not-allowed"
-        : "bg-primary-300 hover:opacity-90"
-    }
-  `}
+  ${
+    book.availableCopies === 0
+      ? "bg-gray-300 cursor-not-allowed"
+      : "bg-primary-300 hover:opacity-90"
+  }
+`}
             >
               {book.availableCopies === 0 ? "Not Available" : "Borrow Book"}
             </button>
