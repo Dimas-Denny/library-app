@@ -15,7 +15,7 @@ export type MyProfile = {
   id: number;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
   avatar: string | null;
   role: "USER" | "ADMIN";
 };
@@ -33,7 +33,7 @@ export const updateProfile = async (data: {
   avatar?: string;
 }) => {
   const res = await client.patch("/me", data);
-  return res.data;
+  return res.data.data;
 };
 
 /* ================= ADMIN ================= */
@@ -62,8 +62,6 @@ export const getUsers = async (
       order: "asc",
     },
   });
-
-  console.log("API RAW:", res.data);
 
   return res.data.data;
 };

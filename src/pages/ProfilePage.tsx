@@ -3,22 +3,30 @@ import ProfileTabs from "@/components/profile/ProfileTabs";
 import ProfileSummaryCard from "@/components/profile/ProfileSummaryCard";
 import EditProfileModal from "@/components/profile/EditProfileModal";
 import { useQuery } from "@tanstack/react-query";
-import { getMyProfile } from "@/api/users.api";
+import { getMyProfile, type MyProfile } from "@/api/users.api";
 import { useAppSelector } from "@/store/hooks";
 
 export default function ProfilePage() {
   const token = useAppSelector((s) => s.auth.token);
   const [editOpen, setEditOpen] = React.useState(false);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<MyProfile>({
     queryKey: ["my-profile"],
     queryFn: getMyProfile,
     enabled: !!token,
   });
 
-  const profile = data?.profile;
-  const loanStats = data?.loanStats;
-  const reviewsCount = data?.reviewsCount;
+  const profile = data;
+
+  // sementara dummy stats (backend belum ada)
+  const loanStats = {
+    total: 0,
+    borrowed: 0,
+    returned: 0,
+    late: 0,
+  };
+
+  const reviewsCount = 0;
 
   return (
     <div className="px-4 md:px-16 py-8 space-y-10">
@@ -42,10 +50,10 @@ export default function ProfilePage() {
           <ProfileSummaryCard
             name={profile.name}
             email={profile.email}
-            createdAt={profile.createdAt}
-            borrowedCount={loanStats?.borrowed ?? 0}
-            returnedCount={loanStats?.returned ?? 0}
-            reviewCount={reviewsCount ?? 0}
+            createdAt={"-"}
+            borrowedCount={loanStats.borrowed}
+            returnedCount={loanStats.returned}
+            reviewCount={reviewsCount}
           />
 
           {/* DETAIL CARD */}
@@ -69,42 +77,36 @@ export default function ProfilePage() {
             </div>
 
             {/* LOAN STATISTICS */}
-            {loanStats && (
-              <div className="pt-6 border-t border-black/10">
-                <h3 className="text-sm font-semibold mb-4">Loan Statistics</h3>
+            <div className="pt-6 border-t border-black/10">
+              <h3 className="text-sm font-semibold mb-4">Loan Statistics</h3>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
-                  <div className="bg-black/5 rounded-2xl py-4">
-                    <p className="text-lg font-semibold">{loanStats.total}</p>
-                    <p className="text-xs text-black/50 mt-1">Total Loans</p>
-                  </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+                <div className="bg-black/5 rounded-2xl py-4">
+                  <p className="text-lg font-semibold">{loanStats.total}</p>
+                  <p className="text-xs text-black/50 mt-1">Total Loans</p>
+                </div>
 
-                  <div className="bg-black/5 rounded-2xl py-4">
-                    <p className="text-lg font-semibold">
-                      {loanStats.borrowed}
-                    </p>
-                    <p className="text-xs text-black/50 mt-1">Borrowed</p>
-                  </div>
+                <div className="bg-black/5 rounded-2xl py-4">
+                  <p className="text-lg font-semibold">{loanStats.borrowed}</p>
+                  <p className="text-xs text-black/50 mt-1">Borrowed</p>
+                </div>
 
-                  <div className="bg-black/5 rounded-2xl py-4">
-                    <p className="text-lg font-semibold">
-                      {loanStats.returned}
-                    </p>
-                    <p className="text-xs text-black/50 mt-1">Returned</p>
-                  </div>
+                <div className="bg-black/5 rounded-2xl py-4">
+                  <p className="text-lg font-semibold">{loanStats.returned}</p>
+                  <p className="text-xs text-black/50 mt-1">Returned</p>
+                </div>
 
-                  <div className="bg-black/5 rounded-2xl py-4">
-                    <p className="text-lg font-semibold">{loanStats.late}</p>
-                    <p className="text-xs text-black/50 mt-1">Late</p>
-                  </div>
+                <div className="bg-black/5 rounded-2xl py-4">
+                  <p className="text-lg font-semibold">{loanStats.late}</p>
+                  <p className="text-xs text-black/50 mt-1">Late</p>
+                </div>
 
-                  <div className="bg-black/5 rounded-2xl py-4">
-                    <p className="text-lg font-semibold">{reviewsCount ?? 0}</p>
-                    <p className="text-xs text-black/50 mt-1">Reviews</p>
-                  </div>
+                <div className="bg-black/5 rounded-2xl py-4">
+                  <p className="text-lg font-semibold">{reviewsCount}</p>
+                  <p className="text-xs text-black/50 mt-1">Reviews</p>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* ACTION BUTTON */}
             <button
@@ -120,7 +122,7 @@ export default function ProfilePage() {
             open={editOpen}
             onClose={() => setEditOpen(false)}
             initialName={profile.name}
-            initialPhone={profile.phone}
+            initialPhone={profile.phone ?? ""}
           />
         </>
       )}
