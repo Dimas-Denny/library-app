@@ -2,8 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import AuthorAvatar from "@/assets/svg/authors.svg";
 import BookIcon from "@/assets/svg/books.svg";
-import { getBooks } from "@/api/books.api";
-import type { Book } from "@/types/books";
+import { getBooks, type GetBooksResponse } from "@/api/books.api";
 import BookCard from "@/components/books/BookCard";
 
 export default function AuthorDetailPage() {
@@ -11,38 +10,27 @@ export default function AuthorDetailPage() {
   const navigate = useNavigate();
   const authorId = Number(id);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<GetBooksResponse>({
     queryKey: ["all-books"],
     queryFn: () => getBooks(),
   });
 
-  const allBooks: Book[] = data?.data?.books ?? [];
+  // semua buku
+  const allBooks = data?.books ?? [];
 
-  const books = allBooks.filter((b) => b.authorId === authorId);
+  // filter buku berdasarkan author
+  const books = allBooks.filter((b) => b.author?.id === authorId);
+
   const authorName = books[0]?.author?.name ?? "Author";
 
   return (
     <div className="px-4 md:px-16 py-8">
-      {/* 🔙 BACK BUTTON */}
+      {/* BACK BUTTON */}
       <button
         onClick={() => navigate(-1)}
         className="mb-6 flex items-center gap-2 text-sm font-medium text-black/70 hover:text-black transition"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back
+        ← Back
       </button>
 
       {/* AUTHOR CARD */}
